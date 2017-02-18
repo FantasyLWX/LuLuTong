@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">路路通</string>
+    <string name="car">汽车票</string>
+    <string name="train">火车票</string>
+    <string name="plane">飞机票</string>
+    <string name="me">我的</string>
+    <string name="car_reserve">汽车票预定</string>
+    <string name="train_reserve">火车票预定</string>
+    <string name="plane_reserve">飞机票预定</string>
 </resources>

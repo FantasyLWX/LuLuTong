@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bottom_background"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:id="@+id/linear_car"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_car"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@mipmap/car_pressed"/>
+
+        <TextView
+            android:id="@+id/text_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/car"
+            android:textSize="12sp"
+            android:textColor="@color/colorPrimary" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_train"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_train"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@mipmap/train_normal"/>
+
+        <TextView
+            android:id="@+id/text_train"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/train"
+            android:textSize="12sp"
+            android:textColor="@color/bottom_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_plane"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_plane"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@mipmap/plane_normal"/>
+
+        <TextView
+            android:id="@+id/text_plane"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plane"
+            android:textSize="12sp"
+            android:textColor="@color/bottom_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_me"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_me"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@mipmap/me_normal"/>
+
+        <TextView
+            android:id="@+id/text_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/me"
+            android:textSize="12sp"
+            android:textColor="@color/bottom_text" />
+
+    </LinearLayout>
+
+</LinearLayout>
