@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,9 +8,15 @@
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/white"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/main_background">
     </FrameLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:scaleType="fitXY"
+        android:src="@mipmap/bottom_line"/>
 
     <include layout="@layout/bottom" />
 

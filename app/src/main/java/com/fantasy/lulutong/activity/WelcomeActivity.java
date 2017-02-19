@@ -1,5 +1,6 @@
 package com.fantasy.lulutong.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +13,9 @@ import com.fantasy.lulutong.R;
  * @author Fantasy
  * @version 1.2, 2017/02/18
  */
-public class WelcomeActivity extends BaseActivity {
+public class WelcomeActivity extends Activity {
+
+    // 如果这个类继承BaseActivity，加载速度会慢1秒，从而影响体验
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,7 @@ public class WelcomeActivity extends BaseActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 3000);
+        }, 2500);
     }
 
     // 屏蔽返回键

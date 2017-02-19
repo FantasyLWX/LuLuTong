@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#7cbe01</color>
+    <color name="btn_back_pressed">#70a113</color>
     <color name="colorPrimaryDark">#6b9716</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="bottom_background">#e6e6e6</color>
+
+    <color name="main_background">#ebebeb</color>
+
     <color name="bottom_text">#999999</color>
+
     <color name="white">#ffffff</color>
+    <color name="gray">#cecece</color>
     <color name="black">#000000</color>
 </resources>
