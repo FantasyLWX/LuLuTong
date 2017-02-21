@@ -1,6 +1,7 @@
 package com.fantasy.lulutong.activity.me;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,8 +13,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.fantasy.lulutong.R;
 import com.fantasy.lulutong.activity.BaseActivity;
+import com.fantasy.lulutong.util.GlobalVariable;
+import com.fantasy.lulutong.util.VolleySingleton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * “找回密码”模块
@@ -32,6 +46,10 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
     private Button btnRetrieve;
 
     private AlertDialog.Builder alertDialog;
+    private ProgressDialog progressDialog;
+
+    private String url;
+    private StringRequest stringRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,18 +137,84 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
 
                 if (TextUtils.isEmpty(editVerification.getText().toString())) {
                     editVerification.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "请输入验证信息",
+                    Toast.makeText(RetrievePasswordActivity.this, "请输入预留验证信息",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (editVerification.getText().toString().length() > 30) {
                     editVerification.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "验证信息不能超过30个字符",
+                    Toast.makeText(RetrievePasswordActivity.this, "预留验证信息不能超过30个字符",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                progressDialog = ProgressDialog.show(RetrievePasswordActivity.this, "",
+                        "正在处理...", false, false);
 
+                url = GlobalVariable.HOST + "/UserPasswordServlet";
+
+                stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>(){
+                            @Override
+                            public void onResponse(String response) {
+                                progressDialog.dismiss();
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    if (jsonObject.getString("code").equals("0")) {
+                                        alertDialog = new AlertDialog.Builder(
+                                                RetrievePasswordActivity.this);
+                                        alertDialog.setTitle("验证成功");
+                                        alertDialog.setMessage(jsonObject.getString("message"));
+                                        alertDialog.setCancelable(false);
+                                        alertDialog.setPositiveButton("确定",
+                                                new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                finish();
+                                            }
+                                        });
+                                        alertDialog.show();
+                                    } else {
+                                        alertDialog = new AlertDialog.Builder(
+                                                RetrievePasswordActivity.this);
+                                        alertDialog.setTitle("验证失败");
+                                        alertDialog.setMessage(jsonObject.getString("message"));
+                                        alertDialog.setCancelable(false);
+                                        alertDialog.setPositiveButton("确定", null);
+                                        alertDialog.show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener(){
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                progressDialog.dismiss();
+                                alertDialog = new AlertDialog.Builder(RetrievePasswordActivity.this);
+                                alertDialog.setTitle("验证失败");
+                                alertDialog.setMessage("服务器异常！");
+                                alertDialog.setCancelable(false);
+                                alertDialog.setPositiveButton("确定", null);
+                                alertDialog.show();
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> map = new HashMap<>();
+                        map.put("type", "retrieve");
+                        map.put("name", editName.getText().toString());
+                        map.put("real_name", editRealName.getText().toString());
+                        map.put("certificate_type", textCertificateType.getText().toString());
+                        map.put("certificate_num", editNum.getText().toString());
+                        map.put("verification", editVerification.getText().toString());
+                        return map;
+                    }
+                };
+                //将StringRequest对象添加进RequestQueue请求队列中
+                VolleySingleton.getVolleySingleton(this.getApplicationContext())
+                        .addToRequestQueue(stringRequest);
                 break;
             default:
                 break;
