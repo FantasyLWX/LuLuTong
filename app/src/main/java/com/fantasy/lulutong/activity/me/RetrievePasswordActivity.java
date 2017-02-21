@@ -194,7 +194,7 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
                                 progressDialog.dismiss();
                                 alertDialog = new AlertDialog.Builder(RetrievePasswordActivity.this);
                                 alertDialog.setTitle("验证失败");
-                                alertDialog.setMessage("服务器异常！");
+                                alertDialog.setMessage("网络异常！");
                                 alertDialog.setCancelable(false);
                                 alertDialog.setPositiveButton("确定", null);
                                 alertDialog.show();

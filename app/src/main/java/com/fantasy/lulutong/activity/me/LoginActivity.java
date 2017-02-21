@@ -102,16 +102,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                         JSONObject data = jsonObject.getJSONObject("data");
 
                                         editor.putString("name", data.getString("name"));
-                                        //editor.putString("password", data.getString("password"));
-                                        editor.putString("email", data.getString("email"));
-                                        editor.putString("phone", data.getString("phone"));
                                         editor.putString("real_name", data.getString("real_name"));
-                                        editor.putString("certificate_type",
-                                                data.getString("certificate_type"));
-                                        editor.putString("certificate_num",
-                                                data.getString("certificate_num"));
-                                        editor.putString("verification",
-                                                data.getString("verification"));
                                         editor.commit();
 
                                         Intent intent = new Intent(LoginActivity.this,
@@ -137,7 +128,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 progressDialog.dismiss();
                                 alertDialog = new AlertDialog.Builder(LoginActivity.this);
                                 alertDialog.setTitle("登录失败");
-                                alertDialog.setMessage("服务器异常！");
+                                alertDialog.setMessage("网络异常！");
                                 alertDialog.setCancelable(false);
                                 alertDialog.setPositiveButton("确定", null);
                                 alertDialog.show();

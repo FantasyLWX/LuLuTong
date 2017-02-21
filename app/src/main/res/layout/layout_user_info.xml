@@ -38,10 +38,10 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/relative_name"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
+        android:clickable="true"
         android:background="@drawable/btn_main_bg_selector">
 
         <TextView
@@ -55,6 +55,7 @@
             android:text="用户名" />
 
         <TextView
+            android:id="@+id/text_user_info_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -63,8 +64,7 @@
             android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
             android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="User_01" />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
@@ -75,7 +75,7 @@
         android:src="@mipmap/spilt_line"/>
 
     <RelativeLayout
-        android:id="@+id/relative_11"
+        android:id="@+id/relative_user_info_email"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/btn_main_bg_selector">
@@ -91,6 +91,7 @@
             android:text="电子邮箱" />
 
         <TextView
+            android:id="@+id/text_user_info_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -99,8 +100,7 @@
             android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
             android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="1117045480@qq.com" />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
@@ -111,7 +111,7 @@
         android:src="@mipmap/spilt_line"/>
 
     <RelativeLayout
-        android:id="@+id/relative_11s"
+        android:id="@+id/relative_user_info_phone"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/btn_main_bg_selector">
@@ -127,6 +127,7 @@
             android:text="手机号码" />
 
         <TextView
+            android:id="@+id/text_user_info_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -135,15 +136,14 @@
             android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
             android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="18874857485" />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
     <!-- 空一行 -->
 
     <RelativeLayout
-        android:id="@+id/relative_name111"
+        android:id="@+id/relative_user_info_real_name"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
@@ -160,6 +160,7 @@
             android:text="真实姓名" />
 
         <TextView
+            android:id="@+id/text_user_info_real_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -168,8 +169,7 @@
             android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
             android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="路路通" />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
@@ -180,7 +180,7 @@
         android:src="@mipmap/spilt_line"/>
 
     <RelativeLayout
-        android:id="@+id/relative11_11"
+        android:id="@+id/relative_user_info_type"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/btn_main_bg_selector">
@@ -196,6 +196,7 @@
             android:text="证件类型" />
 
         <TextView
+            android:id="@+id/text_user_info_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -204,8 +205,7 @@
             android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
             android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="公民身份证" />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
@@ -216,7 +216,7 @@
         android:src="@mipmap/spilt_line"/>
 
     <RelativeLayout
-        android:id="@+id/relative_2211s"
+        android:id="@+id/relative_user_info_num"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/btn_main_bg_selector">
@@ -232,6 +232,7 @@
             android:text="证件号码" />
 
         <TextView
+            android:id="@+id/text_user_info_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -240,15 +241,14 @@
             android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
             android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="440708188415487895" />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
     <!-- 空一行 -->
 
     <RelativeLayout
-        android:id="@+id/relative_setting"
+        android:id="@+id/relative_user_info_verification"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
@@ -265,18 +265,19 @@
             android:text="验证信息" />
 
         <TextView
-            android:layout_width="220dp"
+            android:id="@+id/text_user_info_verification"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
+            android:gravity="right"
             android:textSize="15sp"
             android:textColor="@color/black"
             android:maxLines="1"
-            android:ellipsize="end"
-            android:text="123333333333444444466666666" />
+            android:ellipsize="end" />
 
     </RelativeLayout>
 
