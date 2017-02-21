@@ -3,7 +3,9 @@ package com.fantasy.lulutong.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,8 +16,10 @@ import android.widget.Toast;
 import com.fantasy.lulutong.R;
 import com.fantasy.lulutong.fragment.CarFragment;
 import com.fantasy.lulutong.fragment.MeFragment;
+import com.fantasy.lulutong.fragment.MeLoginFragment;
 import com.fantasy.lulutong.fragment.PlaneFragment;
 import com.fantasy.lulutong.fragment.TrainFragment;
+import com.fantasy.lulutong.util.ActivityCollector;
 
 /**
  * 主界面
@@ -45,6 +49,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Fragment meFragment;
     /** 点击返回键的时间 */
     private long exitTime = 0;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         textTrain = (TextView) findViewById(R.id.text_train);
         textPlane = (TextView) findViewById(R.id.text_plane);
         textMe = (TextView) findViewById(R.id.text_me);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         linearCar.setOnClickListener(this);
         linearTrain.setOnClickListener(this);
@@ -160,11 +167,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case 3:
-                if (meFragment == null) {
-                    meFragment = new MeFragment();
-                    transaction.add(R.id.frame_content, meFragment);
+                if (prefs.getString("name", null) == null) { // 登录名为null，则证明用户未登录
+                    if (meFragment == null) {
+                        meFragment = new MeLoginFragment();
+                        transaction.add(R.id.frame_content, meFragment);
+                    } else {
+                        transaction.show(meFragment);
+                    }
                 } else {
-                    transaction.show(meFragment);
+                    if (meFragment == null) {
+                        meFragment = new MeFragment();
+                        transaction.add(R.id.frame_content, meFragment);
+                    } else {
+                        transaction.show(meFragment);
+                    }
                 }
                 break;
             default:
@@ -185,7 +201,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
             } else {
-                finish();
+                ActivityCollector.finishAll();
                 System.exit(0);
             }
             return true;

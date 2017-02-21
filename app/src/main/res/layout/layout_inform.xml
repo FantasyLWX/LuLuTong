@@ -11,7 +11,7 @@
         android:background="@color/colorPrimary">
 
         <RelativeLayout
-            android:id="@+id/relative_back"
+            android:id="@+id/relative_inform_back"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@drawable/btn_back_bg_selector">

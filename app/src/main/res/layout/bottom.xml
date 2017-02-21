@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:text="@string/train"
             android:textSize="12sp"
-            android:textColor="@color/bottom_text" />
+            android:textColor="@color/text_bottom" />
 
     </LinearLayout>
 
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:text="@string/plane"
             android:textSize="12sp"
-            android:textColor="@color/bottom_text" />
+            android:textColor="@color/text_bottom" />
 
     </LinearLayout>
 
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:text="@string/me"
             android:textSize="12sp"
-            android:textColor="@color/bottom_text" />
+            android:textColor="@color/text_bottom" />
 
     </LinearLayout>
 

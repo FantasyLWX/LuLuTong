@@ -1,10 +1,11 @@
-package com.fantasy.lulutong.activity;
+package com.fantasy.lulutong.activity.me;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.fantasy.lulutong.R;
+import com.fantasy.lulutong.activity.BaseActivity;
 
 /**
  * “注册”的页面
@@ -19,7 +20,7 @@ public class RegisterActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register);
-        relativeBack = (RelativeLayout) findViewById(R.id.relative_back);
+        relativeBack = (RelativeLayout) findViewById(R.id.relative_register_back);
         relativeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

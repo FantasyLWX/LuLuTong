@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fantasy.lulutong">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -17,7 +19,17 @@
         </activity>
         <activity android:name=".activity.MainActivity">
         </activity>
-        <activity android:name=".activity.AboutActivity">
+        <activity android:name=".activity.me.LoginActivity">
+        </activity>
+        <activity android:name=".activity.me.RetrievePasswordActivity">
+        </activity>
+        <activity android:name=".activity.me.RegisterActivity">
+        </activity>
+        <activity android:name=".activity.me.InformActivity">
+        </activity>
+        <activity android:name=".activity.me.AboutActivity">
+        </activity>
+        <activity android:name=".activity.me.UserInfoActivity">
         </activity>
     </application>
 

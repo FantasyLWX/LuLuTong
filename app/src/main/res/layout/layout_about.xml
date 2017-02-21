@@ -11,7 +11,7 @@
         android:background="@color/colorPrimary">
 
         <RelativeLayout
-            android:id="@+id/relative_back"
+            android:id="@+id/relative_about_back"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@drawable/btn_back_bg_selector">
@@ -36,8 +36,8 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="30dp"
