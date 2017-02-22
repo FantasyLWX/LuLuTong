@@ -90,135 +90,183 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
                 alertDialog.show();
                 break;
             case R.id.btn_retrieve:
-                if (TextUtils.isEmpty(editName.getText().toString())) {
-                    editName.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "请输入用户名",
-                            Toast.LENGTH_SHORT).show();
-                    return;
+                if (verify()) {
+                    retrieve();
                 }
-                if (editName.getText().toString().length() > 20) {
-                    editName.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "用户名的长度不能大于20位",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                break;
+            default:
+                break;
+        }
+    }
 
-                if (TextUtils.isEmpty(editRealName.getText().toString())) {
-                    editRealName.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "请输入真实姓名",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (editRealName.getText().toString().length() > 20) {
-                    editRealName.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "真实姓名的长度不能大于20位",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+    /**
+     * 验证输入的信息是否合法
+     * @return 如果合法，则返回true，否则返回false
+     */
+    private boolean verify() {
+        if (TextUtils.isEmpty(editName.getText().toString())) {
+            editName.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "请输入用户名",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (editName.getText().toString().length() > 20) {
+            editName.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "用户名的长度不能大于20位",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
-                if (textCertificateType.getText().equals("证件类型")) {
-                    Toast.makeText(RetrievePasswordActivity.this, "请选择证件类型",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        if (TextUtils.isEmpty(editRealName.getText().toString())) {
+            editRealName.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "请输入真实姓名",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (editRealName.getText().toString().length() > 20) {
+            editRealName.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "真实姓名的长度不能大于20位",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
-                if (TextUtils.isEmpty(editNum.getText().toString())) {
-                    editNum.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "请输入证件号码",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (editNum.getText().toString().length() > 20) {
-                    editNum.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "请输入有效的证件号码",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        if (textCertificateType.getText().equals("证件类型")) {
+            Toast.makeText(RetrievePasswordActivity.this, "请选择证件类型",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
-                if (TextUtils.isEmpty(editVerification.getText().toString())) {
-                    editVerification.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "请输入预留验证信息",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (editVerification.getText().toString().length() > 30) {
-                    editVerification.requestFocus();
-                    Toast.makeText(RetrievePasswordActivity.this, "预留验证信息不能超过30个字符",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        if (TextUtils.isEmpty(editNum.getText().toString())) {
+            editNum.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "请输入证件号码",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (editNum.getText().toString().length() > 20) {
+            editNum.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "请输入有效的证件号码",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
-                progressDialog = ProgressDialog.show(RetrievePasswordActivity.this, "",
-                        "正在处理...", false, false);
+        if (TextUtils.isEmpty(editVerification.getText().toString())) {
+            editVerification.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "请输入预留验证信息",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (editVerification.getText().toString().length() > 30) {
+            editVerification.requestFocus();
+            Toast.makeText(RetrievePasswordActivity.this, "预留验证信息不能超过30个字符",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 
-                url = GlobalVariable.HOST + "/UserPasswordServlet";
+    /**
+     * 发送请求给服务器，找回密码
+     */
+    private void retrieve() {
+        progressDialog = ProgressDialog.show(RetrievePasswordActivity.this, "",
+                "正在处理...", false, false);
 
-                stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>(){
-                            @Override
-                            public void onResponse(String response) {
-                                progressDialog.dismiss();
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    if (jsonObject.getString("code").equals("0")) {
-                                        alertDialog = new AlertDialog.Builder(
-                                                RetrievePasswordActivity.this);
-                                        alertDialog.setTitle("验证成功");
-                                        alertDialog.setMessage(jsonObject.getString("message"));
-                                        alertDialog.setCancelable(false);
-                                        alertDialog.setPositiveButton("确定",
-                                                new DialogInterface.OnClickListener() {
+        //http://主机名/LuLuTongManagementSystem/UserPasswordServlet?type=null&name=null
+        //&real_name&certificate_type&certificate_num&verification
+        url = GlobalVariable.HOST + "/UserPasswordServlet";
+
+        stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.dismiss();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            switch (jsonObject.getString("code")) {
+                                case "0": // 成功
+                                    alertDialog = new AlertDialog.Builder(
+                                            RetrievePasswordActivity.this);
+                                    alertDialog.setTitle("验证成功");
+                                    alertDialog.setMessage(jsonObject.getString("message"));
+                                    alertDialog.setCancelable(false);
+                                    alertDialog.setPositiveButton("确定",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
+                                                    finish();
+                                                }
+                                            });
+                                    alertDialog.show();
+                                    break;
+                                case "101": // 普通错误，仅仅提示而已
+                                    alertDialog = new AlertDialog.Builder(
+                                            RetrievePasswordActivity.this);
+                                    alertDialog.setTitle("验证失败");
+                                    alertDialog.setMessage(jsonObject.getString("message"));
+                                    alertDialog.setCancelable(false);
+                                    alertDialog.setPositiveButton("确定", null);
+                                    alertDialog.show();
+                                    break;
+                                default:
+                                    break;
+                            }
+
+/*                            if (jsonObject.getString("code").equals("0")) {
+                                alertDialog = new AlertDialog.Builder(
+                                        RetrievePasswordActivity.this);
+                                alertDialog.setTitle("验证成功");
+                                alertDialog.setMessage(jsonObject.getString("message"));
+                                alertDialog.setCancelable(false);
+                                alertDialog.setPositiveButton("确定",
+                                        new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 finish();
                                             }
                                         });
-                                        alertDialog.show();
-                                    } else {
-                                        alertDialog = new AlertDialog.Builder(
-                                                RetrievePasswordActivity.this);
-                                        alertDialog.setTitle("验证失败");
-                                        alertDialog.setMessage(jsonObject.getString("message"));
-                                        alertDialog.setCancelable(false);
-                                        alertDialog.setPositiveButton("确定", null);
-                                        alertDialog.show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        },
-                        new Response.ErrorListener(){
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                progressDialog.dismiss();
-                                alertDialog = new AlertDialog.Builder(RetrievePasswordActivity.this);
+                                alertDialog.show();
+                            } else {
+                                alertDialog = new AlertDialog.Builder(
+                                        RetrievePasswordActivity.this);
                                 alertDialog.setTitle("验证失败");
-                                alertDialog.setMessage("网络异常！");
+                                alertDialog.setMessage(jsonObject.getString("message"));
                                 alertDialog.setCancelable(false);
                                 alertDialog.setPositiveButton("确定", null);
                                 alertDialog.show();
-                            }
-                        }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> map = new HashMap<>();
-                        map.put("type", "retrieve");
-                        map.put("name", editName.getText().toString());
-                        map.put("real_name", editRealName.getText().toString());
-                        map.put("certificate_type", textCertificateType.getText().toString());
-                        map.put("certificate_num", editNum.getText().toString());
-                        map.put("verification", editVerification.getText().toString());
-                        return map;
+                            }*/
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                };
-                //将StringRequest对象添加进RequestQueue请求队列中
-                VolleySingleton.getVolleySingleton(this.getApplicationContext())
-                        .addToRequestQueue(stringRequest);
-                break;
-            default:
-                break;
-        }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        alertDialog = new AlertDialog.Builder(RetrievePasswordActivity.this);
+                        alertDialog.setTitle("验证失败");
+                        alertDialog.setMessage("网络异常！");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setPositiveButton("确定", null);
+                        alertDialog.show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<>();
+                map.put("type", "retrieve");
+                map.put("name", editName.getText().toString());
+                map.put("real_name", editRealName.getText().toString());
+                map.put("certificate_type", textCertificateType.getText().toString());
+                map.put("certificate_num", editNum.getText().toString());
+                map.put("verification", editVerification.getText().toString());
+                return map;
+            }
+        };
+        //将StringRequest对象添加进RequestQueue请求队列中
+        VolleySingleton.getVolleySingleton(this.getApplicationContext())
+                .addToRequestQueue(stringRequest);
     }
 
 }

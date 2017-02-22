@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.fantasy.lulutong.R;
 import com.fantasy.lulutong.activity.BaseActivity;
 import com.fantasy.lulutong.activity.MainActivity;
+import com.fantasy.lulutong.activity.WelcomeActivity;
 import com.fantasy.lulutong.util.ActivityCollector;
 import com.fantasy.lulutong.util.GlobalVariable;
 import com.fantasy.lulutong.util.VolleySingleton;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * “个人信息”模块
+ * “个人信息”模块，功能：查看和修改
  * @author Fantasy
  * @version 1.0, 2017-02-21
  */
@@ -83,6 +84,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
         prefes = PreferenceManager.getDefaultSharedPreferences(UserInfoActivity.this);
         editor = prefes.edit();
+        //http://主机名/LuLuTongManagementSystem/UserInfoServlet?type=null&name=null&value=null
         url = GlobalVariable.HOST + "/UserInfoServlet";
 
         relativeBack.setOnClickListener(this);
@@ -103,7 +105,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.relative_user_info_email:
-
+                Intent intent = new Intent(this, UserInfoEmailActivity.class);
+                startActivity(intent);
                 break;
             case R.id.relative_user_info_phone:
 
@@ -126,62 +129,68 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     }
 
     /**
-     * 初始化用户个人信息
+     * 发送请求给服务器，查看用户个人信息
      */
     private void initUserInfo() {
-        progressDialog = ProgressDialog.show(UserInfoActivity.this, "",
-                "正在加载...", false, false);
+        progressDialog = ProgressDialog.show(UserInfoActivity.this, "", "正在加载...", false, false);
 
         stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>(){
                     @Override
                     public void onResponse(String response) {
+                        progressDialog.dismiss();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            if (jsonObject.getString("code").equals("0")) {
-                                JSONObject data = jsonObject.getJSONObject("data");
+                            switch (jsonObject.getString("code")) {
+                                case "0":
+                                    JSONObject data = jsonObject.getJSONObject("data");
 
-                                editor.putString("email", data.getString("email"));
-                                editor.putString("phone", data.getString("phone"));
-                                editor.putString("real_name", data.getString("real_name"));
-                                editor.putString("certificate_type",
-                                        data.getString("certificate_type"));
-                                editor.putString("certificate_num",
-                                        data.getString("certificate_num"));
-                                editor.putString("verification",
-                                        data.getString("verification"));
-                                editor.commit();
+                                    editor.putString("email", data.getString("email"));
+                                    editor.putString("phone", data.getString("phone"));
+                                    editor.putString("real_name", data.getString("real_name"));
+                                    editor.putString("certificate_type",
+                                            data.getString("certificate_type"));
+                                    editor.putString("certificate_num",
+                                            data.getString("certificate_num"));
+                                    editor.putString("verification",
+                                            data.getString("verification"));
+                                    editor.commit();
 
-                                textName.setText(prefes.getString("name", null));
-                                textEmail.setText(prefes.getString("email", null));
-                                textPhone.setText(prefes.getString("phone", null));
-                                textRealName.setText(prefes.getString("real_name", null));
-                                textCertificateType.setText(
-                                        prefes.getString("certificate_type", null));
-                                textNum.setText(prefes.getString("certificate_num", null));
-                                textVerification.setText(prefes.getString("verification", null));
+                                    textName.setText(prefes.getString("name", null));
+                                    textEmail.setText(prefes.getString("email", null));
+                                    textPhone.setText(prefes.getString("phone", null));
+                                    textRealName.setText(prefes.getString("real_name", null));
+                                    textCertificateType.setText(
+                                            prefes.getString("certificate_type", null));
+                                    textNum.setText(prefes.getString("certificate_num", null));
+                                    textVerification.setText(prefes.getString("verification", null));
 
-                                progressDialog.dismiss();
-                            } else {
-                                progressDialog.dismiss();
-                                alertDialog = new AlertDialog.Builder(UserInfoActivity.this);
-                                alertDialog.setTitle("加载失败");
-                                alertDialog.setMessage(jsonObject.getString("message"));
-                                alertDialog.setCancelable(false);
-                                alertDialog.setPositiveButton("确定",
-                                        new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        editor.putString("name", null);
-                                        editor.putString("real_name", null);
-                                        editor.commit();
-                                        Intent intent = new Intent(UserInfoActivity.this,
-                                                MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                });
-                                alertDialog.show();
+                                    //progressDialog.dismiss();
+                                    break;
+                                case "100": // 严重错误，获取不到合法权限，要求重新登录
+                                    //progressDialog.dismiss();
+                                    alertDialog = new AlertDialog.Builder(UserInfoActivity.this);
+                                    alertDialog.setTitle("加载失败");
+                                    alertDialog.setMessage(jsonObject.getString("message"));
+                                    alertDialog.setCancelable(false);
+                                    alertDialog.setPositiveButton("确定",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
+                                                    editor.putString("name", null);
+                                                    editor.putString("real_name", null);
+                                                    editor.commit();
+                                                    Intent intent = new Intent(UserInfoActivity.this,
+                                                            WelcomeActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
+                                    alertDialog.show();
+                                    break;
+                                default:
+                                    break;
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -203,8 +212,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> map = new HashMap<>();
-                map.put("type", "name");
+                map.put("type", "all");
                 map.put("name", prefes.getString("name", null));
+                map.put("value", prefes.getString("name", null));
                 return map;
             }
         };

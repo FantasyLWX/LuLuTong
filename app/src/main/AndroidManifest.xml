@@ -31,6 +31,8 @@
         </activity>
         <activity android:name=".activity.me.UserInfoActivity">
         </activity>
+        <activity android:name=".activity.me.UserInfoEmailActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -59,7 +59,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.relative_name:
+            case R.id.relative_name: // 个人信息
                 intent = new Intent(getActivity(), UserInfoActivity.class);
                 startActivity(intent);
                 break;
@@ -68,7 +68,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 //startActivity(intent);
                 break;
             case R.id.relative_setting: // 设置
-                //intent = new Intent(getActivity(), RegisterActivity.class);
+                //intent = new Intent(getActivity(), SettingActivity.class);
                 //startActivity(intent);
                 break;
             case R.id.relative_inform:

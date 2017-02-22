@@ -31,6 +31,14 @@ public class ActivityCollector {
     }
 
     /**
+     * 销毁掉当前所在活动的前一个活动，即销毁掉活动管理器中倒数第二个添加进来的那个活动
+     */
+    public static void finishPreviousOne() {
+        activities.get(activities.size() - 2).finish();
+        activities.remove(activities.size() - 2);
+    }
+
+    /**
      * 销毁掉活动管理器中所有活动
      */
     public static void finishAll() {
@@ -40,4 +48,5 @@ public class ActivityCollector {
             }
         }
     }
+
 }
