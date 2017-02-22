@@ -54,9 +54,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     private TextView textNum;
     private TextView textVerification;
 
-    private StringRequest stringRequest;
     private SharedPreferences prefes;
     private SharedPreferences.Editor editor;
+    private StringRequest stringRequest;
     private ProgressDialog progressDialog;
     private AlertDialog.Builder alertDialog;
     private String url;
@@ -84,6 +84,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
         prefes = PreferenceManager.getDefaultSharedPreferences(UserInfoActivity.this);
         editor = prefes.edit();
+
         //http://主机名/LuLuTongManagementSystem/UserInfoServlet?type=null&name=null&value=null
         url = GlobalVariable.HOST + "/UserInfoServlet";
 
@@ -100,28 +101,43 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
             case R.id.relative_user_info_back:
                 finish();
                 break;
             case R.id.relative_user_info_email:
-                Intent intent = new Intent(this, UserInfoEmailActivity.class);
+                intent = new Intent(this, UserInfoEmailActivity.class);
                 startActivity(intent);
                 break;
             case R.id.relative_user_info_phone:
-
+                intent = new Intent(this, UserInfoPhoneActivity.class);
+                startActivity(intent);
                 break;
             case R.id.relative_user_info_real_name:
-
+                intent = new Intent(this, UserInfoRealNameActivity.class);
+                startActivity(intent);
                 break;
             case R.id.relative_user_info_type:
-
+                final String[] items = new String[]{ "二代身份证", "港澳通行证", "台湾通行证", "护照" };
+                alertDialog = new AlertDialog.Builder(UserInfoActivity.this);
+                alertDialog.setTitle("请选择证件类型：");
+                alertDialog.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //textCertificateType.setText(items[which]);
+                        saveCertificateType(items[which]);
+                    }
+                });
+                alertDialog.show();
                 break;
             case R.id.relative_user_info_num:
-
+                intent = new Intent(this, UserInfoNumActivity.class);
+                startActivity(intent);
                 break;
             case R.id.relative_user_info_verification:
-
+                intent = new Intent(this, UserInfoVerificationActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -164,11 +180,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                                             prefes.getString("certificate_type", null));
                                     textNum.setText(prefes.getString("certificate_num", null));
                                     textVerification.setText(prefes.getString("verification", null));
-
-                                    //progressDialog.dismiss();
                                     break;
                                 case "100": // 严重错误，获取不到合法权限，要求重新登录
-                                    //progressDialog.dismiss();
                                     alertDialog = new AlertDialog.Builder(UserInfoActivity.this);
                                     alertDialog.setTitle("加载失败");
                                     alertDialog.setMessage(jsonObject.getString("message"));
@@ -215,6 +228,90 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 map.put("type", "all");
                 map.put("name", prefes.getString("name", null));
                 map.put("value", prefes.getString("name", null));
+                return map;
+            }
+        };
+        VolleySingleton.getVolleySingleton(this.getApplicationContext())
+                .addToRequestQueue(stringRequest);
+    }
+
+    /**
+     * 发送请求给服务器，保存修改的证件类型
+     */
+    private void saveCertificateType(final String certificateTypeString) {
+        progressDialog = ProgressDialog.show(UserInfoActivity.this, "",
+                "正在保存...", false, false);
+        //http://主机名/LuLuTongManagementSystem/UserInfoServlet?type=null&name=null&value=null
+        url = GlobalVariable.HOST + "/UserInfoServlet";
+
+        stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.dismiss();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            switch (jsonObject.getString("code")) {
+                                case "0": // 成功
+                                    Intent intent = new Intent(UserInfoActivity.this,
+                                            UserInfoActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    break;
+                                case "100": // 严重错误，获取不到合法权限，要求重新登录
+                                    alertDialog = new AlertDialog.Builder(UserInfoActivity.this);
+                                    alertDialog.setTitle("修改失败");
+                                    alertDialog.setMessage(jsonObject.getString("message"));
+                                    alertDialog.setCancelable(false);
+                                    alertDialog.setPositiveButton("确定",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
+                                                    editor.putString("name", null);
+                                                    editor.putString("real_name", null);
+                                                    editor.commit();
+                                                    Intent intent = new Intent(
+                                                            UserInfoActivity.this,
+                                                            WelcomeActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
+                                    alertDialog.show();
+                                    break;
+                                case "101":  // 普通错误，仅仅提示而已
+                                    alertDialog = new AlertDialog.Builder(UserInfoActivity.this);
+                                    alertDialog.setTitle("修改失败");
+                                    alertDialog.setMessage(jsonObject.getString("message"));
+                                    alertDialog.setCancelable(false);
+                                    alertDialog.setPositiveButton("确定", null);
+                                    alertDialog.show();
+                                    break;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        alertDialog = new AlertDialog.Builder(UserInfoActivity.this);
+                        alertDialog.setTitle("保存失败");
+                        alertDialog.setMessage("网络异常！");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setPositiveButton("确定", null);
+                        alertDialog.show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> map = new HashMap<>();
+                map.put("type", "certificate_type");
+                map.put("name", prefes.getString("name", null));
+                map.put("value", certificateTypeString);
                 return map;
             }
         };

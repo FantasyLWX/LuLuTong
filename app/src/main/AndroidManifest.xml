@@ -33,6 +33,14 @@
         </activity>
         <activity android:name=".activity.me.UserInfoEmailActivity">
         </activity>
+        <activity android:name=".activity.me.UserInfoPhoneActivity">
+        </activity>
+        <activity android:name=".activity.me.UserInfoRealNameActivity">
+        </activity>
+        <activity android:name=".activity.me.UserInfoNumActivity">
+        </activity>
+        <activity android:name=".activity.me.UserInfoVerificationActivity">
+        </activity>
     </application>
 
 </manifest>

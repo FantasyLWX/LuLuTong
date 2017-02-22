@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.fantasy.lulutong.R;
 import com.fantasy.lulutong.activity.BaseActivity;
-import com.fantasy.lulutong.activity.MainActivity;
 import com.fantasy.lulutong.activity.WelcomeActivity;
 import com.fantasy.lulutong.util.ActivityCollector;
 import com.fantasy.lulutong.util.GlobalVariable;
@@ -33,18 +33,16 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * 电子邮箱修改模块
+ * 证件号码修改模块
  * @author Fantasy
  * @version 1.0, 2017-02-22
  */
-public class UserInfoEmailActivity extends BaseActivity implements View.OnClickListener {
+public class UserInfoNumActivity extends BaseActivity implements View.OnClickListener {
 
     private RelativeLayout relativeBack;
-    private EditText editEmail;
+    private EditText editNum;
     private Button btnSave;
 
     private SharedPreferences prefes;
@@ -57,23 +55,23 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_user_info_email);
+        setContentView(R.layout.layout_user_info_num);
 
-        relativeBack = (RelativeLayout) findViewById(R.id.relative_alter_email_back);
-        editEmail = (EditText) findViewById(R.id.edit_alter_email);
-        btnSave = (Button) findViewById(R.id.btn_alter_email);
+        relativeBack = (RelativeLayout) findViewById(R.id.relative_alter_num_back);
+        editNum = (EditText) findViewById(R.id.edit_alter_num);
+        btnSave = (Button) findViewById(R.id.btn_alter_num);
 
-        prefes = PreferenceManager.getDefaultSharedPreferences(UserInfoEmailActivity.this);
+        prefes = PreferenceManager.getDefaultSharedPreferences(UserInfoNumActivity.this);
         editor = prefes.edit();
-        editEmail.setText(prefes.getString("email", null));
-        // 当有修改电子邮箱才可以保存
-        editEmail.addTextChangedListener(new TextWatcher() {
+        editNum.setText(prefes.getString("certificate_num", null));
+        // 当有修改才可以保存
+        editNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (editEmail.getText().toString().equals(prefes.getString("email", null))) {
+                if (editNum.getText().toString().equals(prefes.getString("certificate_num", null))) {
                     btnSave.setEnabled(false);
                 } else {
                     btnSave.setEnabled(true);
@@ -91,18 +89,13 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.relative_alter_email_back:
+            case R.id.relative_alter_num_back:
                 finish();
                 break;
-            case R.id.btn_alter_email:
-                String email = editEmail.getText().toString();
-                if (!isEmail(email) || email.length() > 30) {
-                    editEmail.requestFocus();
-                    Toast.makeText(UserInfoEmailActivity.this, "请输入有效的电子邮箱",
-                            Toast.LENGTH_SHORT).show();
-                    return;
+            case R.id.btn_alter_num:
+                if (verify()) {
+                    saveCertificateNum();
                 }
-                saveEmail();
                 break;
             default:
                 break;
@@ -110,22 +103,30 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
     }
 
     /**
-     * 判断电子邮箱的格式是否正确
-     * @param email 电子邮箱
-     * @return 如果正确的话，则返回true，否则返回false
+     * 验证输入的信息是否合法
+     * @return 如果合法，则返回true，否则返回false
      */
-    public boolean isEmail(String email) {
-        String str = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
-        Pattern p = Pattern.compile(str);
-        Matcher m = p.matcher(email);
-        return m.matches();
+    private boolean verify() {
+        if (TextUtils.isEmpty(editNum.getText().toString())) {
+            editNum.requestFocus();
+            Toast.makeText(UserInfoNumActivity.this, "请输入证件号码",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (editNum.getText().toString().length() > 20) {
+            editNum.requestFocus();
+            Toast.makeText(UserInfoNumActivity.this, "请输入有效的证件号码",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     /**
-     * 发送请求给服务器，保存修改的电子邮箱
+     * 发送请求给服务器，保存修改的证件号码
      */
-    private void saveEmail() {
-        progressDialog = ProgressDialog.show(UserInfoEmailActivity.this, "",
+    private void saveCertificateNum() {
+        progressDialog = ProgressDialog.show(UserInfoNumActivity.this, "",
                 "正在保存...", false, false);
         //http://主机名/LuLuTongManagementSystem/UserInfoServlet?type=null&name=null&value=null
         url = GlobalVariable.HOST + "/UserInfoServlet";
@@ -140,13 +141,13 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
                             switch (jsonObject.getString("code")) {
                                 case "0": // 保存成功
                                     ActivityCollector.finishPreviousOne();
-                                    Intent intent = new Intent(UserInfoEmailActivity.this,
+                                    Intent intent = new Intent(UserInfoNumActivity.this,
                                             UserInfoActivity.class);
                                     startActivity(intent);
                                     finish();
                                     break;
                                 case "100": // 严重错误，获取不到合法权限，要求重新登录
-                                    alertDialog = new AlertDialog.Builder(UserInfoEmailActivity.this);
+                                    alertDialog = new AlertDialog.Builder(UserInfoNumActivity.this);
                                     alertDialog.setTitle("保存失败");
                                     alertDialog.setMessage(jsonObject.getString("message"));
                                     alertDialog.setCancelable(false);
@@ -159,7 +160,7 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
                                                     editor.putString("real_name", null);
                                                     editor.commit();
                                                     Intent intent = new Intent(
-                                                            UserInfoEmailActivity.this,
+                                                            UserInfoNumActivity.this,
                                                             WelcomeActivity.class);
                                                     startActivity(intent);
                                                     finish();
@@ -168,7 +169,7 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
                                     alertDialog.show();
                                     break;
                                 case "101":  // 普通错误，仅仅提示而已
-                                    alertDialog = new AlertDialog.Builder(UserInfoEmailActivity.this);
+                                    alertDialog = new AlertDialog.Builder(UserInfoNumActivity.this);
                                     alertDialog.setTitle("保存失败");
                                     alertDialog.setMessage(jsonObject.getString("message"));
                                     alertDialog.setCancelable(false);
@@ -185,7 +186,7 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
-                        alertDialog = new AlertDialog.Builder(UserInfoEmailActivity.this);
+                        alertDialog = new AlertDialog.Builder(UserInfoNumActivity.this);
                         alertDialog.setTitle("保存失败");
                         alertDialog.setMessage("网络异常！");
                         alertDialog.setCancelable(false);
@@ -196,9 +197,9 @@ public class UserInfoEmailActivity extends BaseActivity implements View.OnClickL
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> map = new HashMap<>();
-                map.put("type", "email");
+                map.put("type", "certificate_num");
                 map.put("name", prefes.getString("name", null));
-                map.put("value", editEmail.getText().toString());
+                map.put("value", editNum.getText().toString());
                 return map;
             }
         };
